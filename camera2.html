@@ -15,7 +15,7 @@
       var Sheight = window.screen.availHeight * 0.85;
       var Swidth = window.screen.availWidth * 1;
       var config = {
-        type: Phaser.AUTO,
+        type: Phaser.CANVAS,
         width: Swidth,
         height: Sheight,
         // game.scale.pageAlignHorizontally = true;
@@ -67,13 +67,14 @@
       }
 
       function create() {
+        //this.game.world.setBounds(0, 0, this.game.width, 3500);
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
         let background = this.add
           .tileSprite(0, 0, game.scale.width, game.scale.height, "sky")
           .setOrigin(0, 0);
 
         //create all animations
-
+       // this.cameras.main.setZoom(4);
         let playerAnimations = {};
         var idle = this.anims.create({
           key: "slime_idle",
@@ -116,7 +117,6 @@
         player = new Player(this, 400, 400, "slime", playerAnimations);
         this.physics.add.collider(player, platforms);
         player.play(player.animations["idle"]);
-
         //Set up user input
         cursors = this.input.keyboard.createCursorKeys();
         keys = this.input.keyboard.addKeys("A, D");
@@ -140,7 +140,11 @@
         basePlatform.setScale(3, 1).refreshBody();
 
         platforms.create(500, 250, "platform");
-        platforms.create(950, 400, "platform");
+        
+        platform1 = platforms.create(950, 700, "platform");
+        platform1.body.checkCollision.down = false;
+        platform1.body.checkCollision.right = false;
+        platform1.body.checkCollision.left = false;
       }
 
       function update() {
@@ -148,10 +152,7 @@
         //console.log(player.x);
         //Player will not move in the x-axis unless a movement key is being pressed
         //player.setVelocityX(0);
-
-        //Player has "drag" on the x-axis meaning they slide a bit after an input
-        player.setDragX(1000);
-
+        this.camera.mainsetPosition(Swidth/2, player.body.position.y);
         //Handle player movements
         if (cursors.left.isDown || keys.A.isDown) {
           if (player.body.velocity.x > -maxSpeed) {
@@ -203,9 +204,10 @@
       }
       function jump(event) {
         if (player.body.touching.down) {
-          player.setVelocityY(-600);
+          player.setVelocityY(-1000);
         }
       }
+      
 
       class Player extends Phaser.Physics.Arcade.Sprite {
         animations;
@@ -222,3 +224,4 @@
     </script>
   </body>
 </html>
+
